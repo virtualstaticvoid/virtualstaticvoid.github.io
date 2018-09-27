@@ -1,0 +1,8 @@
+title: VirtualStaticVoid
+description: My Github Pages
+google_analytics: UA-6230358-14
+show_downloads: true
+theme: jekyll-theme-hacker
+
+gems:
+  - jekyll-mentions
