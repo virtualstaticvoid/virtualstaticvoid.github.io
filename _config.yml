@@ -9,7 +9,6 @@ author:
 url: https://www.virtualstaticvoid.com
 baseurl: /
 
-markdown: redcarpet
 highlighter: pygments
 permalink: pretty
 
