@@ -9,7 +9,7 @@ author:
 url: https://www.virtualstaticvoid.com
 baseurl: /
 
-highlighter: pygments
+highlighter: rouge
 permalink: pretty
 
 paginate: 5
