@@ -1,5 +1,8 @@
 .sidebar .logo {
 	border-radius: 50%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .sidebar h1 {
@@ -15,4 +18,19 @@
 
 .sidebar .socials img {
 	filter: invert(1);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sidebar .sidebar-nav {
+	text-align: center;
+}
+
+.sidebar .copyright {
+	text-align: center;
+}
+
+.pagination .pagination-item {
+	padding: 0px;
 }

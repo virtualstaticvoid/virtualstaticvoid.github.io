@@ -11,8 +11,8 @@
       <p class="lead">{{ site.description }}</p>
 
       <p class="socials">
-        <a href="https://{{ site.author.github }}">
-          <img src="{{ site.baseurl }}/public/github.png" width="32" height="32" />
+        <a href="https://{{ site.author.github }}" target="_blank">
+          <img src="{{ site.baseurl }}/public/github.png" width="48" height="48" />
         </a>
       </p>
 
@@ -33,6 +33,6 @@
 
     </nav>
 
-    <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>
+    <p class="copyright">&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>
   </div>
 </div>
