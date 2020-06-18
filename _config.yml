@@ -5,9 +5,9 @@ description: 'A personal project showcase and blog on adventures in programming.
 author:
   name: 'Chris Stefano'
   email: virtualstaticvoid@gmail.com
+  github: github.com/virtualstaticvoid
 
 url: https://www.virtualstaticvoid.com
-baseurl: /
 
 highlighter: rouge
 permalink: pretty
