@@ -1,0 +1,12 @@
+.sidebar .logo {
+	border-radius: 50%;
+}
+
+.sidebar h1 {
+  font-family: "Amatic SC", Helvetica, Arial, sans-serif;
+	font-size: 3rem !important;
+}
+
+.sidebar .lead {
+	font-size: 1rem  !important;
+}

@@ -1,8 +1,19 @@
 title: VirtualStaticVoid
-description: My Github Pages
-google_analytics: UA-6230358-14
-show_downloads: true
-theme: jekyll-theme-hacker
+tagline: 'Making sense of the ever changing'
+description: 'A personal project showcase and blog on adventures in programming.'
 
-gems:
-  - jekyll-mentions
+author:
+  name: 'Chris Stefano'
+  email: virtualstaticvoid@gmail.com
+
+url: https://www.virtualstaticvoid.com
+baseurl: /
+
+markdown: redcarpet
+highlighter: pygments
+permalink: pretty
+
+paginate: 5
+
+plugins:
+  - jekyll-paginate
