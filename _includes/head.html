@@ -53,8 +53,10 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'UA-176402934-1');
+    ga('create', 'UA-176402934-1', {
+      cookieFlags: 'max-age=7200;secure;samesite=none'
+    });
   </script>
 
 </head>
