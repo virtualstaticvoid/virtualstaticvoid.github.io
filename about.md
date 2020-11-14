@@ -26,8 +26,9 @@ including C#, Ruby, Go and R.
 I am a Open Source contributor; of which the most widely used project is the Heroku Buildpack for R,
 which I actively maintain for a growing R data science community.
 
-I am currently Head of Engineering at [Confluence][confluence] (formerly [StatPro][statpro]) and responsible for the high-level technical
-architecture, working with our development teams in London, Milan, Montreal, Pittsburgh and Cape Town.
+I am currently Head of Engineering at [Confluence][confluence] (formerly [StatPro][statpro]) and responsible for the
+high-level technical architecture of the [Performance and Analytics][performance-analytics] solution, working with
+development teams in London, Milan, Montreal, Pittsburgh and Cape Town.
 
 Other interests include playing guitar, electronic music production and my motorcycle.
 
@@ -44,4 +45,5 @@ _Chris Stefano_
 [confluence]: https://confluence.com
 [github]: https://github.com/cstefano
 [linkedin]: https://www.linkedin.com/in/chrisstefano/
+[performance-analytics]: https://www.confluence.com/solutions/performance-analytics
 [statpro]: https://www.statpro.com
