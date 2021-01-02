@@ -7,9 +7,9 @@ I thought I'd have some fun in December, setting up a Raspberry Pi cluster for r
 
 ![](/public/images/IMG_20210102_153916.jpg)
 
-My goal was to automate as much of the process of setting up each node of the cluster as possible, as I'd read several blog posts on the subject, and most require many manual steps having to be repeated on each node, and since I value repeatable processes I enjoyed the challenge of figuring it out.
+My goal was to automate as much of the process of setting up each node of the cluster as possible, as I'd read several blog posts on the subject and most require many manual steps having to be repeated on each node, and since I value repeatable processes I enjoyed the challenge of figuring it out.
 
-I'm assuming a certain level of knowledge for readers of this post, so I'm not spelling out the exact steps to follow. There are many posts on the internet which do a much better job of explaining things that I. For example, checkout this post [Make Ubuntu server 20.04 boot from an SSD on Raspberry Pi 4](https://medium.com/@zsmahi/make-ubuntu-server-20-04-boot-from-an-ssd-on-raspberry-pi-4-33f15c66acd4) by Zakaria Smahi.
+I'm assuming a certain level of knowledge for readers of this post, so I'm not spelling out every step needed. There are many posts on the internet which do a much better job of explaining things; for example, checkout this post [Make Ubuntu server 20.04 boot from an SSD on Raspberry Pi 4](https://medium.com/@zsmahi/make-ubuntu-server-20-04-boot-from-an-ssd-on-raspberry-pi-4-33f15c66acd4) by Zakaria Smahi.
 
 ## Inventory
 
@@ -27,9 +27,11 @@ First off, the inventory of components I am using:
 * [Raspberry Pi OS Lite](https://www.raspberrypi.org/software/operating-systems/) - _2020-12-02-raspios-buster-armhf-lite.zip_
 * [Ubuntu Server 20.04.1 LTS for Raspberry Pi 4 64 bit](https://ubuntu.com/download/raspberry-pi) - _ubuntu-20.04.1-preinstalled-server-arm64+raspi.img.xz_
 
-Since the Raspberry Pi 4 supports booting off an external drive via USB 3, I only purchased one SD Card.
+Since the Raspberry Pi 4 supports booting off an external drive via USB, I only purchased one SD Card, which will be needed to boot each Pi in order to enable booting from USB.
 
 It is recommended to run off Solid State Drives as Kubernetes is disk heavy and the disk performance and lifetime of SSD's is considerably better than that of SD cards.
+
+I followed these steps to setup my cluster from my Ubuntu laptop.
 
 ## Enabling USB Boot
 
@@ -121,10 +123,10 @@ Create a directory on your PC and create each file with the following content, o
   manage_etc_hosts: true
 
   groups:
-    + k8s
+    - k8s
 
   users:
-    + name: k8s
+    - name: k8s
       gecos: Kubernetes
       passwd: "PASSWORD_HASH"
       lock_passwd: false
@@ -133,7 +135,7 @@ Create a directory on your PC and create each file with the following content, o
       sudo: ["ALL=(ALL) NOPASSWD:ALL"]
       shell: /bin/bash
       ssh_authorized_keys:
-        + "SSH_AUTHORIZED_KEY"
+        - "SSH_AUTHORIZED_KEY"
 
   ssh_pwauth: false
 
