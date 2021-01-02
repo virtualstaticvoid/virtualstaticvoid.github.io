@@ -5,6 +5,8 @@ title: Ubuntu 20.04 Raspberry Pi Cluster
 
 I thought I'd have some fun in December, setting up a Raspberry Pi cluster for running Kubernetes.
 
+![](/public/images/IMG_20210102_153916.jpg)
+
 My goal was to automate as much of the process of setting up each node of the cluster as possible, as I'd read several blog posts on the subject, and most require many manual steps having to be repeated on each node, and since I value repeatable processes I enjoyed the challenge of figuring it out.
 
 I'm assuming a certain level of knowledge for readers of this post, so I'm not spelling out the exact steps to follow. There are many posts on the internet which do a much better job of explaining things that I. For example, checkout this post [Make Ubuntu server 20.04 boot from an SSD on Raspberry Pi 4](https://medium.com/@zsmahi/make-ubuntu-server-20-04-boot-from-an-ssd-on-raspberry-pi-4-33f15c66acd4) by Zakaria Smahi.
