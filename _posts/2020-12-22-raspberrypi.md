@@ -316,3 +316,5 @@ ssh k8s@192.168.0.103
 ```
 
 Next, I'll write a post on installing Kubernetes on the cluster.
+
+EDIT: I had to update the firmware of the SSD drive enclosures to solve a slow boot issue. The updated firmware can be downloaded from [Sabrent](https://www.sabrent.com/downloads/) website and seaching for the `EC-UASP` model. I had to use a Windows computer to perform the update.
