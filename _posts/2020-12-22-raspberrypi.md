@@ -39,23 +39,58 @@ Flash the SD card with Raspberry Pi OS Lite, mount it and create an empty file c
 
 Insert the SD card into the first Raspberry Pi node and switch it on. Figure out it's IP address and connect via SSH from your PC. I used `nmap 192.168.0.1-254` to figure out the IP address; given my home network is in the 192.168.0.x range, I limited the search to addresses between 1 and 254.
 
-Once you have an SSH terminal onto to first Raspberry Pi node, running the following script enables booting from USB:
+```
+$ nmap 192.168.0.1-254
 
-```sh
-FILNAME=/lib/firmware/raspberrypi/bootloader/critical/pieeprom-2020-09-03.bin
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-12-22 17:21 GMT
 
-EECFG=$(mktemp)
-vcgencmd bootloader_config > $EECFG
-sed $EECFG -i -e "s/^BOOT_ORDER=.*/BOOT_ORDER=0xf41/"
+...
 
-EEBIN=$(mktemp)
-rpi-eeprom-config --config $EECFG --out $EEBIN $FILNAME
-rpi-eeprom-update -d -f $EEBIN
+Nmap scan report for raspberrypi (192.168.0.76)
+Host is up (0.0094s latency).
+Not shown: 997 closed ports
+PORT    STATE SERVICE
+22/tcp  open  ssh
+
+...
 ```
 
-I figured out how to do this by reading the source code of the [`raspi-config`](https://github.com/RPi-Distro/raspi-config) tool; specifically the function [`do_boot_order`](https://github.com/RPi-Distro/raspi-config/blob/master/raspi-config#L1354).
+In my case, the IP was `192.168.0.76`. The default username is `pi` and password is `raspberry`.
 
-If you prefer, you can run the `raspi-config` tool interactively instead, selecting the "Boot Device Order" option to set the order.
+```
+$ ssh pi@192.168.0.76
+The authenticity of host '192.168.0.76 (192.168.0.76)' can't be established.
+ECDSA key fingerprint is SHA256:XxXxXXXxxx/ZZzyyyzZZZxxxXXxyyYYYZZzZzZZxxYy.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.0.76' (ECDSA) to the list of known hosts.
+pi@192.168.0.76's password:
+Linux raspberrypi 5.10.0-v7l+ #1382 SMP Tue Dec 15 18:23:34 GMT 2020 armv7l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Dec 22 18:57:21 2020
+
+SSH is enabled and the default password for the 'pi' user has not been changed.
+This is a security risk - please login as the 'pi' user and type 'passwd' to set a new password.
+
+
+Wi-Fi is currently blocked by rfkill.
+Use raspi-config to set the country before use.
+
+pi@raspberrypi:~ $
+```
+
+Once you have an SSH terminal onto to first Raspberry Pi node, use the `raspi-config` tool to change the boot order.
+
+```
+sudo raspi-config
+```
+
+See [Raspberry Pi 4 bootloader configuration](https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711_bootloader_config.md) for more information.
 
 Power off the node, running `sudo poweroff`, and proceed to complete this step on the other 3 nodes.
 
