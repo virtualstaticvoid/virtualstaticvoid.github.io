@@ -9,27 +9,38 @@ I thought I'd have some fun in December, setting up a Raspberry Pi cluster for r
 
 My goal was to automate as much of the process of setting up each node of the cluster as possible, as I'd read several blog posts on the subject and most require many manual steps having to be repeated on each node, and since I value repeatable processes I enjoyed the challenge of figuring it out.
 
-I'm assuming a certain level of knowledge for readers of this post, so I'm not spelling out every step needed. There are many posts on the internet which do a much better job of explaining things; for example, checkout this post [Make Ubuntu server 20.04 boot from an SSD on Raspberry Pi 4](https://medium.com/@zsmahi/make-ubuntu-server-20-04-boot-from-an-ssd-on-raspberry-pi-4-33f15c66acd4) by Zakaria Smahi.
+I'm assuming a certain level of knowledge for readers of this post, so I'm not spelling out every step needed.
+
+There are many posts on the internet which do a much better job of explaining things; for example, checkout this post [Make Ubuntu server 20.04 boot from an SSD on Raspberry Pi 4](https://medium.com/@zsmahi/make-ubuntu-server-20-04-boot-from-an-ssd-on-raspberry-pi-4-33f15c66acd4) by Zakaria Smahi.
 
 ## Inventory
 
 First off, the inventory of components I am using:
+
+### Hardware
 
 * 4 x [Raspberry Pi Model B](https://thepihut.com/collections/raspberry-pi/products/raspberry-pi-4-model-b)
 * 4 x [Official Raspberry Pi 4 Power Supply](https://thepihut.com/collections/raspberry-pi-power-supplies/products/raspberry-pi-psu-uk)
 * 4 x [Micro-USB Cable with On/Off Switch](https://thepihut.com/collections/raspberry-pi-power-supplies/products/micro-usb-cable-with-on-off-switch) (Optional)
 * 4 x [Baititon 2.5 inch SATA III Internal Solid State Drive 128GB SSD](https://www.amazon.co.uk/gp/product/B08F59B8KH/ref=ppx_yo_dt_b_asin_title_o09_s00)
 * 4 x [Sabrent 2.5-Inch SATA to USB 3.0 Tool-free External Hard Drive Enclosure](https://www.amazon.co.uk/gp/product/B00OJ3UJ2S/ref=ppx_yo_dt_b_asin_title_o09_s01)
-* [Pi Rack Case for Raspberry Pi 4 Model B](https://www.amazon.co.uk/gp/product/B07J9VMNBL/ref=ppx_yo_dt_b_asin_title_o00_s00)
-* [Netgear 5 Port Gigabit Ethernet Network Switch](https://www.amazon.co.uk/gp/product/B07PYSNSDD/ref=ox_sc_act_title_1)
-* [Pack of 0.25m CAT.5e Network Cables](https://www.amazon.co.uk/gp/product/B003SPDAW4/ref=ppx_yo_dt_b_asin_title_o00_s00)
-* [SanDisk Ultra 16 GB microSDHC Memory Card + SD Adapter](https://www.amazon.co.uk/SanDisk-microSDHC-Memory-Adapter-Performance/dp/B073K14CVB/)
-* [Raspberry Pi OS Lite](https://www.raspberrypi.org/software/operating-systems/) - _2020-12-02-raspios-buster-armhf-lite.zip_
-* [Ubuntu Server 20.04.1 LTS for Raspberry Pi 4 64 bit](https://ubuntu.com/download/raspberry-pi) - _ubuntu-20.04.1-preinstalled-server-arm64+raspi.img.xz_
+* 1 x [Pi Rack Case for Raspberry Pi 4 Model B](https://www.amazon.co.uk/gp/product/B07J9VMNBL/ref=ppx_yo_dt_b_asin_title_o00_s00)
+* 1 x [Netgear 5 Port Gigabit Ethernet Network Switch](https://www.amazon.co.uk/gp/product/B07PYSNSDD/ref=ox_sc_act_title_1)
+* 1 x [Pack of 0.25m CAT.5e Network Cables](https://www.amazon.co.uk/gp/product/B003SPDAW4/ref=ppx_yo_dt_b_asin_title_o00_s00)
+* 1 x [SanDisk Ultra 16 GB microSDHC Memory Card + SD Adapter](https://www.amazon.co.uk/SanDisk-microSDHC-Memory-Adapter-Performance/dp/B073K14CVB/)
 
 Since the Raspberry Pi 4 supports booting off an external drive via USB, I only purchased one SD Card, which will be needed to boot each Pi in order to enable booting from USB.
 
-It is recommended to run off Solid State Drives as Kubernetes is disk heavy and the disk performance and lifetime of SSD's is considerably better than that of SD cards.
+I'm planning to run Kubernetes on my cluster, so it is recommended to run off Solid State Drives as Kubernetes is disk heavy and the performance and lifetime of SSD's is considerably better than that of an SD card.
+
+EDIT: I had to update the firmware of the SSD drive enclosures to solve a slow boot issue. The updated firmware can be found on the [Sabrent](https://www.sabrent.com/downloads/) website and seaching for the `EC-UASP` model. I had to use a Windows computer to perform the firmware update.
+
+### Disk Images
+
+* [Raspberry Pi OS Lite](https://www.raspberrypi.org/software/operating-systems/) - _2020-12-02-raspios-buster-armhf-lite.zip_
+* [Ubuntu Server 20.04.1 LTS for Raspberry Pi 4 64 bit](https://ubuntu.com/download/raspberry-pi) - _ubuntu-20.04.1-preinstalled-server-arm64+raspi.img.xz_
+
+## Steps
 
 I followed these steps to setup my cluster from my Ubuntu laptop.
 
@@ -37,9 +48,13 @@ I followed these steps to setup my cluster from my Ubuntu laptop.
 
 Booting the Raspberry Pi off USB isn't enabled by default; enabling requires changing the boot order to first attempt USB followed by the SD card.
 
-Flash the SD card with Raspberry Pi OS Lite, mount it and create an empty file called `ssh` on the boot partition to enable SSH. Unmount and eject the SD card when done.
+Flash the SD card with the Raspberry Pi OS Lite operating system. This [article](https://www.raspberrypi.org/documentation/installation/installing-images/) explains how to install the Raspberry Pi operating system image on an SD card.
 
-Insert the SD card into the first Raspberry Pi node and switch it on. Figure out it's IP address and connect via SSH from your PC. I used `nmap 192.168.0.1-254` to figure out the IP address; given my home network is in the 192.168.0.x range, I limited the search to addresses between 1 and 254.
+SSH needs to be enabled so headless installation is possible. After flashing the SD card, mount it and create an empty file called `ssh` in the "boot" partition. Unmount and eject the SD card when done.
+
+Insert the SD card into the first Raspberry Pi node and switch it on.
+
+Figure out it's IP address and connect via SSH from your PC. I used `nmap 192.168.0.1-254` to figure out the IP address; given my home network is in the `192.168.0.x` range, I limited the search to addresses between 1 and 254.
 
 ```
 $ nmap 192.168.0.1-254
@@ -57,7 +72,7 @@ PORT    STATE SERVICE
 ...
 ```
 
-In my case, the IP was `192.168.0.76`. The default username is `pi` and password is `raspberry`.
+In my case, the IP was `192.168.0.76` and the default username is `pi` and password is `raspberry`.
 
 ```
 $ ssh pi@192.168.0.76
@@ -79,22 +94,23 @@ Last login: Tue Dec 22 18:57:21 2020
 SSH is enabled and the default password for the 'pi' user has not been changed.
 This is a security risk - please login as the 'pi' user and type 'passwd' to set a new password.
 
-
 Wi-Fi is currently blocked by rfkill.
 Use raspi-config to set the country before use.
 
 pi@raspberrypi:~ $
 ```
 
-Once you have an SSH terminal onto to first Raspberry Pi node, use the `raspi-config` tool to change the boot order.
+Once you have an SSH terminal onto to first Raspberry Pi node you can configure the boot order.
+
+See [Raspberry Pi 4 bootloader configuration](https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711_bootloader_config.md) for how it is done.
+
+Or use the `raspi-config` utility to configure via the console user-interface.
 
 ```
 sudo raspi-config
 ```
 
-See [Raspberry Pi 4 bootloader configuration](https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2711_bootloader_config.md) for more information.
-
-Power off the node, running `sudo poweroff`, and proceed to complete this step on the other 3 nodes.
+Power off the node, running `sudo poweroff`, remove the SD card and repeat these steps for each of the nodes.
 
 ## Provisioning Ubuntu
 
@@ -144,6 +160,8 @@ Create a directory on your PC and create each file with the following content, o
   ```
 
 * `network-config`
+
+  My home network is on `192.168.0.*`, but you may need to change the range for your network.
 
   ```
   version: 2
@@ -297,11 +315,29 @@ Create a directory on your PC and create each file with the following content, o
   exit 0
   ```
 
+Make sure you have downloaded the Ubuntu disk image file from requirements above, and placed it in the same directory as the `provision` script, so your file layout should look like:
+
+```
+$ tree
+.
+├── 999_decompress_rpi_kernel
+├── auto_decompress_kernel
+├── network-config
+├── provision
+├── ubuntu-20.04.1-preinstalled-server-arm64+raspi.img.xz
+├── user-data
+└── usercfg.txt
+
+0 directories, 7 files
+```
+
 **VERY IMPORTANT!**
 
 After inserting the SSD drive you will need to figure out it's block device name using `lsblk`, since the provision script will flash the SSD with the Ubuntu image, so **you must be sure you have the correct device name**.
 
 For example, on my computer it is `sdb` but it might be different for you!
+
+You can use `lsblk` to figure out which device name is correct.
 
 ```
 $ lsblk
@@ -321,19 +357,28 @@ sdb                     11:0    0 128.0G  0 disk
 ...
 ```
 
-Run `provision` script, providing the block device name, hostname for the node and the IP suffix.
+The `provision` script requires providing the block device name, hostname for the node and the IP suffix.
 
-I am going to have a 4 node Raspberry Pi cluster running Kubernetes, so I settled on host naming convention of `rpi-k8s-<role>-<number>` for my nodes, where `<role>` is the role of the node; either "master" or "agent"; and `<number>` is the instance number; starting from `001` to `999`.
+I am going to have a 4 node Raspberry Pi cluster running Kubernetes, so I settled on host naming convention of `rpi-k8s-<role>-<number>` for my nodes, where `<role>` is the role of the node; either "server" or "agent"; and `<number>` is the instance number; starting from `001` to `999`.
 
-My home network's subnet is `192.168.0.0/24`, so I decided to have my master node have the IP `192.168.0.100`, followed by `192.168.0.101`, `192.168.0.102` and `192.168.0.103` for each agent node.
+I decided to have my server node have the IP `192.168.0.100`, followed by `192.168.0.101`, `192.168.0.102` and `192.168.0.103` for each agent node.
 
-So, running the `provision` script with the following arguments for my master node:
+Note: The Ubuntu image filename and password can be overridden by setting the `IMAGE` and `PASSWORD` environment variables before running the `provision` script.
+
+E.g.
 
 ```
-./provision sbd rpi-k8s-master-001 100
+export IMAGE=ubuntu-20.04.1-preinstalled-server-arm64+raspi.img.xz
+export PASSWORD=p@ssw0rD
 ```
 
-I intend to run an HA master in future; so having the number `001` for the first master node makes it consistent for when I add the second master `002`.
+Run the `provision` script with the following arguments for the server node:
+
+```
+./provision sbd rpi-k8s-server-001 100
+```
+
+I intend to run an HA server in future, so having the number `001` for the first server node makes it consistent for when I add the second server with `002`.
 
 And then for each agent node (_inserting and ejecting each respective SSD in between_):
 
@@ -343,7 +388,11 @@ And then for each agent node (_inserting and ejecting each respective SSD in bet
 ./provision sbd rpi-k8s-agent-003 103
 ```
 
-Finally, connect the SSD drives to each Raspberry Pi node and power them on. Each node will automatically provision itself and after some time, you will be able to SSH onto them using the `k8s` user.
+Finally, connect the SSD drives to each Raspberry Pi node and power them on.
+
+Each node will automatically provision itself and after some time, you will be able to SSH onto them using the `k8s` user.
+
+E.g.
 
 ```
 ssh k8s@192.168.0.100
@@ -353,5 +402,3 @@ ssh k8s@192.168.0.103
 ```
 
 Next, I'll write a post on installing Kubernetes on the cluster.
-
-EDIT: I had to update the firmware of the SSD drive enclosures to solve a slow boot issue. The updated firmware can be downloaded from [Sabrent](https://www.sabrent.com/downloads/) website and seaching for the `EC-UASP` model. I had to use a Windows computer to perform the update.
