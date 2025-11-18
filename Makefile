@@ -9,10 +9,14 @@ setup:
 	gem install bundler
 	bundle install
 
+.PHONY: update
+update:
+	bundle update
+
 .PHONY: run
 run:
 	bundle exec jekyll serve
 
 .PHONY: open
 open:
-	xdg-open http://localhost:4000/
+	sensible-browser http://localhost:4000/
